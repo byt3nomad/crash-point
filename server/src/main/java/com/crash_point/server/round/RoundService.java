@@ -1,19 +1,27 @@
 package com.crash_point.server.round;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
 import java.time.Instant;
 import java.util.UUID;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class RoundService {
     private final RoundRepository roundRepository;
     private final static SecureRandom RANDOM = new SecureRandom();
 
-    public Round createRound() {
+    @Async("roundExecutor")
+    public void startRoundGenerationLoop() {
+        log.info("Starting round generation loop on {}", Thread.currentThread());
+    }
+
+    private Round createRound() {
         var chance = RANDOM.nextDouble();
         double crashPoint;
 
@@ -34,7 +42,7 @@ public class RoundService {
             crashPoint = 50.0 + RANDOM.nextDouble() * 50;
         }
 
-        double roundedCrashPoint = (double) Math.round(crashPoint*100)/100;
+        double roundedCrashPoint = (double) Math.round(crashPoint * 100) / 100;
         Round round = Round.builder()
                 .id(UUID.randomUUID())
                 .crashPoint(roundedCrashPoint)
