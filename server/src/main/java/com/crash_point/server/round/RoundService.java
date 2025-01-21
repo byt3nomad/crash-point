@@ -2,6 +2,7 @@ package com.crash_point.server.round;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,9 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class RoundService {
+    @Value("${app.game.crash-point.stomp.route}")
+    private String crashPointRoute;
+
     private final static SecureRandom RANDOM = new SecureRandom();
     private final static double BASE_MULTIPLIER = 1.0;
     private final static double GROWTH_RATE = 0.07;
@@ -52,11 +56,11 @@ public class RoundService {
             currentMultiplier = BASE_MULTIPLIER * Math.pow(1 + GROWTH_RATE, secondsPassed);
 
             if (currentMultiplier >= crashPoint) {
-                messagingTemplate.convertAndSend("/topic/round", RoundUtil.round(crashPoint));
+                messagingTemplate.convertAndSend(crashPointRoute, RoundUtil.round(crashPoint));
                 break;
             }
 
-            messagingTemplate.convertAndSend("/topic/round", RoundUtil.round(currentMultiplier));
+            messagingTemplate.convertAndSend(crashPointRoute, RoundUtil.round(currentMultiplier));
             RoundUtil.sleep(200);
         }
     }
