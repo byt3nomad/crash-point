@@ -10,10 +10,10 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @Configuration
 @EnableWebSocketMessageBroker
 public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer {
-    @Value("${app.stomp.websocket.endpoint}")
+    @Value("${app.websocket.endpoint}")
     private String websocketEndpoint;
 
-    @Value("${app.game.crash-point.stomp.route}")
+    @Value("${app.crash-point.route}")
     private String crashPointRoute;
 
     @Override

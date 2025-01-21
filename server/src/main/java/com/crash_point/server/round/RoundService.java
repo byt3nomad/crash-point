@@ -15,7 +15,7 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class RoundService {
-    @Value("${app.game.crash-point.stomp.route}")
+    @Value("${app.crash-point.route}")
     private String crashPointRoute;
 
     private final static SecureRandom RANDOM = new SecureRandom();
