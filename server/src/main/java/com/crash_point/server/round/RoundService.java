@@ -1,5 +1,6 @@
 package com.crash_point.server.round;
 
+import com.crash_point.server.round.dto.RoundMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -54,13 +55,14 @@ public class RoundService {
         while (true) {
             var secondsPassed = (double) (System.currentTimeMillis() - startTime) / 1000;
             currentMultiplier = BASE_MULTIPLIER * Math.pow(1 + GROWTH_RATE, secondsPassed);
+            var message = new RoundMessage(RoundUtil.round(currentMultiplier), secondsPassed);
 
             if (currentMultiplier >= crashPoint) {
-                messagingTemplate.convertAndSend(crashPointRoute, RoundUtil.round(crashPoint));
+                messagingTemplate.convertAndSend(crashPointRoute, message);
                 break;
             }
 
-            messagingTemplate.convertAndSend(crashPointRoute, RoundUtil.round(currentMultiplier));
+            messagingTemplate.convertAndSend(crashPointRoute, message);
             RoundUtil.sleep(200);
         }
     }
